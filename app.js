@@ -38,6 +38,7 @@ let controllerIntegrante = require('./controller/integrante/controllerIntegrante
 let controllerCreditado = require('./controller/creditado/controllerCreditado.js')
 let controllerBanda = require('./controller/banda/controllerBanda.js')
 let controllerUsuario = require('./controller/usuario/controllerUsuario.js')
+let controllerAlbum = require('./controller/album/controllerAlbum.js')
 
 //Cria um objeto para o body do tipo JSON
 const bodyParserJSON = bodyParser.json()
