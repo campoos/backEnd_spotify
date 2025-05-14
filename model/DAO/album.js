@@ -49,7 +49,7 @@ const updateAlbum = async function(album){
                                           capa_url            = '${album.capa_url}', 
                                           data_lancamento     = '${album.data_lancamento}', 
                                           id_banda            = '${album.id_banda}'
-                                  where id_banda = ${album.id}`
+                                  where id_album = ${album.id}`
 
     let result = await prisma.$executeRawUnsafe(sql)
 

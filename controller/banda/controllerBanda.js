@@ -183,6 +183,7 @@ const listarBandas = async function (){
 
 // Função para retornar uma banda pelo ID
 const buscarBanda = async function (id){
+
     try {
         if (id == '' || id == undefined || id == null || isNaN(id)){
             return message.ERROR_REQUIRED_FIELDS

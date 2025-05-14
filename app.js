@@ -702,7 +702,76 @@ app.put('/v1/controle-usuarios/usuario/:id', cors(), bodyParserJSON, async funct
     response.json(resultUsuario)
 })
 
+//------------------------------ENDPOINTS DO ALBUM-----------------------------------//
 
+//Endpoint para inserir um album
+app.post('/v1/controle-albuns/album', cors(), bodyParserJSON, async function(request, response){
+
+    //Recebe o CONTENT TYPE da requisição 
+    let contentType = request.headers['content-type']
+
+    //Recebe os dados do body da requisição
+    let dadosBody = request.body
+
+    //Chama a função da Controller para inserir os dados e aguarda o retorno da função
+    let resultAlbum = await controllerAlbum.inserirAlbum(dadosBody, contentType)
+
+    response.status(resultAlbum.status_code)
+    response.json(resultAlbum)
+})
+
+//Endpoint para listar todos os albuns
+app.get('/v1/controle-albuns/album', cors(), async function(request, response){
+    let resultAlbum = await controllerAlbum.listarAlbuns()
+
+    response.status(resultAlbum.status_code)
+    response.json(resultAlbum)
+})
+
+//Endpoint para buscar um album pelo ID
+app.get('/v1/controle-albuns/album/:id', cors(), async function(request, response){
+
+    //Recebe o ID
+    let idAlbum = request.params.id
+
+    //Chama a função
+    let resultAlbum = await controllerAlbum.buscarAlbum(idAlbum)
+
+    response.status(resultAlbum.status_code)
+    response.json(resultAlbum)
+})
+
+//Endpoint para deletar um album pelo ID
+app.delete('/v1/controle-albuns/album/:id', cors(), async function(request, response){
+
+    //Recebe o ID
+    let idAlbum = request.params.id
+
+    //Chama a função
+    let resultAlbum = await controllerAlbum.excluirAlbum(idAlbum)
+
+    response.status(resultAlbum.status_code)
+    response.json(resultAlbum)
+})
+
+//Endpoint para atualizar um album pelo ID
+app.put('/v1/controle-albuns/album/:id', cors(), bodyParserJSON, async function(request, response){
+
+    //Rece o Content Type da requisição
+    let contentType = request.headers['content-type']
+
+    //Recebe o ID
+    let idAlbum = request.params.id
+
+    //Recebe os dados do corpo da requisição
+    let dadosBody = request.body
+
+    //Chama a função e encaminha os argumentos de ID, BODY e CONTENT-TYPE
+    let resultAlbum = await controllerAlbum.atualizarAlbum(idAlbum, dadosBody, contentType)
+
+    response.status(resultAlbum.status_code)
+    response.json(resultAlbum)
+})
 
 app.listen(8080, function(){
     console.log('API aguardando requisições...')

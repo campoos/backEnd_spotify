@@ -140,17 +140,16 @@ const listarAlbuns = async function (){
                 dadosAlbuns.items = resultAlbum.length
 
                 for(const itemAlbum of resultAlbum){
-
                     let dadosBanda = await controllerBanda.buscarBanda(itemAlbum.id_banda)
-                    itemAlbum.banda = dadosBanda.nome_banda
+                    itemAlbum.banda = dadosBanda.bands
                     delete itemAlbum.id_banda
 
                     arrayAlbuns.push(itemAlbum)
                 }
 
-                dadosAlbuns.albuns(arrayAlbuns)
+                dadosAlbuns.albuns = arrayAlbuns
 
-                return  dadosAlbuns
+                return dadosAlbuns
             }else{
                 return message.ERROR_NOT_FOUND //404
             }
@@ -193,7 +192,7 @@ const buscarAlbum = async function (id){
                     arrayAlbuns.push(itemAlbum)
                 }
 
-                dadosAlbuns.albuns(arrayAlbuns)
+                dadosAlbuns.albuns = arrayAlbuns
 
                 return  dadosAlbuns
                 }else{
