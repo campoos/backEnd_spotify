@@ -12,6 +12,9 @@ const message = require('../../modulo/config.js')
 //Import do DAO para realizar o CRUD no Banco de dados
 const musicaDAO = require('../../model/DAO/musica.js')
 
+//Import das controller necessárias para fazer os relacionamentos
+const controllerAlbum = require('../album/controllerAlbum.js')
+
 // Função para inserir uma nova música
 const inserirMusica = async function (musica, contentType){
 
@@ -21,7 +24,8 @@ const inserirMusica = async function (musica, contentType){
                 musica.duracao         == ""       || musica.duracao         == null|| musica.duracao         == undefined || musica.duracao.length         > 8   ||
                 musica.data_lancamento == ""       || musica.data_lancamento == null|| musica.data_lancamento == undefined || musica.data_lancamento.length > 10  || 
                 musica.letra           == undefined||
-                musica.link            == undefined|| musica.link.length > 200
+                musica.link            == undefined|| musica.link.length > 200      ||
+                musica.id_album        == ""       || musica.id_album        == undefined
                 )
             {
                 return message.ERROR_REQUIRED_FIELDS //status code 400
@@ -52,7 +56,7 @@ const atualizarMusica = async function (id, musica, contentType){
                 musica.data_lancamento == ""       || musica.data_lancamento == null      || musica.data_lancamento == undefined || musica.data_lancamento.length > 10  || 
                 musica.letra           == undefined||
                 musica.link            == undefined|| musica.link.length     > 200        ||
-                id                     == ""       || id                     == undefined || id                     == null      || isNaN(id)
+                musica.id_album        == ""       || musica.id_album        == undefined
                 )
             {
                 return message.ERROR_REQUIRED_FIELDS //status code 400
@@ -119,6 +123,8 @@ const excluirMusica = async function (id){
 // Função para retornar uma lista de músicas
 const listarMusica = async function (){
     try {
+        let arrayMusicas = []
+
         //Criando um objeto JSON
         let dadosMusica = {
 
@@ -132,8 +138,17 @@ const listarMusica = async function (){
                 //Cria um JSON para colocar o ARRAY de músicas
                 dadosMusica.status = true,
                 dadosMusica.status_code = 200,
-                dadosMusica.items = resultMusica.length,
-                dadosMusica.musics = resultMusica
+                dadosMusica.items = resultMusica.length
+
+                for(const itemMusica of resultMusica){
+                    let dadosAlbum = await controllerAlbum.buscarAlbum(itemMusica.id_album)
+                    itemMusica.album = dadosAlbum.albuns
+                    delete itemMusica.id_album
+
+                    arrayMusicas.push(itemMusica)
+                }
+
+                dadosMusica.musics = arrayMusicas
 
                 return  dadosMusica
             }else{
@@ -150,6 +165,7 @@ const listarMusica = async function (){
 // Função para retornar uma música pelo ID
 const buscarMusica = async function (id){
     try {
+        let arrayMusicas = []
         if (id == '' || id == undefined || id == null || isNaN(id)){
             return message.ERROR_REQUIRED_FIELDS
         }else{
@@ -162,12 +178,22 @@ const buscarMusica = async function (id){
             if(resultMusica != false || typeof(resultMusica) == 'object'){
                 if(resultMusica.length > 0){
 
-                    //Cria um JSON para colocar o ARRAY de músicas
-                    dadosMusica.status = true,
-                    dadosMusica.status_code = 200,
-                    dadosMusica.musics = resultMusica
+                //Cria um JSON para colocar o ARRAY de músicas
+                dadosMusica.status = true,
+                dadosMusica.status_code = 200,
+                dadosMusica.items = resultMusica.length
 
-                    return  dadosMusica
+                for(const itemMusica of resultMusica){
+                    let dadosAlbum = await controllerAlbum.buscarAlbum(itemMusica.id_album)
+                    itemMusica.album = dadosAlbum.albuns
+                    delete itemMusica.id_album
+
+                    arrayMusicas.push(itemMusica)
+                }
+
+                dadosMusica.musics = arrayMusicas
+
+                return  dadosMusica
                 }else{
                     return message.ERROR_NOT_FOUND //404
                 }
@@ -179,8 +205,6 @@ const buscarMusica = async function (id){
         return message.ERROR_INTERNAL_SERVER_CONTROLLER //500
     }
 }
-
-
 
 module.exports = {
     inserirMusica,

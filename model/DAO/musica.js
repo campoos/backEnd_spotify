@@ -21,14 +21,16 @@ const insertMusica = async function(musica){
                                           duracao, 
                                           data_lancamento, 
                                           letra, 
-                                          link
+                                          link,
+                                          id_album
                                         )
                 values                 ( 
                                           '${musica.nome}',
                                           '${musica.duracao}',
                                           '${musica.data_lancamento}', 
                                           '${musica.letra}', 
-                                          '${musica.link}'
+                                          '${musica.link}',
+                                          '${musica.id_album}'
                                         )`
 
       //Executa o script SQL no bancod e dados e aguarda o resultado final (true ou false)
@@ -52,7 +54,8 @@ const updateMusica = async function(musica){
                                           duracao         = '${musica.duracao}', 
                                           data_lancamento = '${musica.data_lancamento}', 
                                           letra           = '${musica.letra}', 
-                                          link            = '${musica.link}'
+                                          link            = '${musica.link}',
+                                          id_album        = '${musica.id_album}'
                                   where id_musica = ${musica.id}`
 
     let result = await prisma.$executeRawUnsafe(sql)

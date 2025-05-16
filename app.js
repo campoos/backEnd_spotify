@@ -30,12 +30,9 @@ const bodyParser = require('body-parser')
 
 //Import das Controllers do projeto
 let controllerMusica = require('./controller/musica/controllerMusica.js')
-let controllerFuncaoCreditado = require('./controller/funcao-creditado/controllerFuncaoCreditado.js')
-let controllerIdioma = require('./controller/idioma/controllerIdioma.js')
 let controllerGenero = require('./controller/genero/controllerGenero.js')
 let controllerFuncaoIntegrante = require('./controller/funcao_integrante/controllerFuncaoIntegrante.js')
 let controllerIntegrante = require('./controller/integrante/controllerIntegrante.js')
-let controllerCreditado = require('./controller/creditado/controllerCreditado.js')
 let controllerBanda = require('./controller/banda/controllerBanda.js')
 let controllerUsuario = require('./controller/usuario/controllerUsuario.js')
 let controllerAlbum = require('./controller/album/controllerAlbum.js')
@@ -132,148 +129,6 @@ app.put('/v1/controle-musicas/musica/:id', cors(), bodyParserJSON, async functio
 
     response.status(resultMusica.status_code)
     response.json(resultMusica)
-})
-
-//------------------------------ENDPOINTS DA FUNÇÃO DE CREDITADO-----------------------------------//
-
-//Endpoint para inserir uma função de creditado
-app.post('/v1/controle-funcoes-creditados/funcao-creditado', cors(), bodyParserJSON, async function(request, response){
-
-    //Recebe o CONTENT TYPE da requisição 
-    let contentType = request.headers['content-type']
-
-    //Recebe os dados do body da requisição
-    let dadosBody = request.body
-
-    //Chama a função da Controller para inserir os dados e aguarda o retorno da função
-    let resultFuncaoCreditado = await controllerFuncaoCreditado.inserirFuncaoCreditado(dadosBody, contentType)
-
-    response.status(resultFuncaoCreditado.status_code)
-    response.json(resultFuncaoCreditado)
-})
-
-//Endpoint para listar as todas as funções dos creditados
-app.get('/v1/controle-funcoes-creditados/funcao-creditado', cors(), async function(request, response){
-    let resultFuncaoCreditado = await controllerFuncaoCreditado.listarFuncoesCreditados()
-
-    response.status(resultFuncaoCreditado.status_code)
-    response.json(resultFuncaoCreditado)
-})
-
-//Endpoint para buscar uma função de creditado pelo ID
-app.get('/v1/controle-funcoes-creditados/funcao-creditado/:id', cors(), async function(request, response){
-
-    //Recebe o ID
-    let idFuncaoCreditado = request.params.id
-
-    //Chama a função
-    let resultFuncaoCreditado = await controllerFuncaoCreditado.buscarFuncaoCreditado(idFuncaoCreditado)
-
-    response.status(resultFuncaoCreditado.status_code)
-    response.json(resultFuncaoCreditado)
-})
-
-//Endpoint para deletar uma função de creditado pelo ID
-app.delete('/v1/controle-funcoes-creditados/funcao-creditado/:id', cors(), async function(request, response){
-
-    //Recebe o ID
-    let idFuncaoCreditado = request.params.id
-
-    //Chama a função
-    let resultFuncaoCreditado = await controllerFuncaoCreditado.excluirFuncaoCreditado(idFuncaoCreditado)
-
-    response.status(resultFuncaoCreditado.status_code)
-    response.json(resultFuncaoCreditado)
-})
-
-//Endpoint para atualizar uma função de creditado pelo ID
-app.put('/v1/controle-funcoes-creditados/funcao-creditado/:id', cors(), bodyParserJSON, async function(request, response){
-
-    //Rece o Content Type da requisição
-    let contentType = request.headers['content-type']
-
-    //Recebe o ID
-    let idFuncaoCreditado = request.params.id
-
-    //Recebe os dados do corpo da requisição
-    let dadosBody = request.body
-
-    //Chama a função e encaminha os argumentos de ID, BODY e CONTENT-TYPE
-    let resultFuncaoCreditado = await controllerFuncaoCreditado.atualizarFuncaoCreditado(idFuncaoCreditado, dadosBody, contentType)
-
-    response.status(resultFuncaoCreditado.status_code)
-    response.json(resultFuncaoCreditado)
-})
-
-//------------------------------ENDPOINTS DO IDIOMA-----------------------------------//
-
-//Endpoint para inserir um novo idioma
-app.post('/v1/controle-idiomas/idioma', cors(), bodyParserJSON, async function(request, response){
-
-    //Recebe o CONTENT TYPE da requisição 
-    let contentType = request.headers['content-type']
-
-    //Recebe os dados do body da requisição
-    let dadosBody = request.body
-
-    //Chama a função da Controller para inserir os dados e aguarda o retorno da função
-    let resultIdioma = await controllerIdioma.inserirIdioma(dadosBody, contentType)
-
-    response.status(resultIdioma.status_code)
-    response.json(resultIdioma)
-})
-
-//Endpoint para listar todos os idiomas
-app.get('/v1/controle-idiomas/idioma', cors(), async function(request, response){
-    let resultIdioma = await controllerIdioma.listarIdiomas()
-
-    response.status(resultIdioma.status_code)
-    response.json(resultIdioma)
-})
-
-//Endpoint para buscar um idioma pelo ID
-app.get('/v1/controle-idiomas/idioma/:id', cors(), async function(request, response){
-
-    //Recebe o ID
-    let idIdioma = request.params.id
-
-    //Chama a função
-    let resultIdioma = await controllerIdioma.buscarIdioma(idIdioma)
-
-    response.status(resultIdioma.status_code)
-    response.json(resultIdioma)
-})
-
-//Endpoint para deletar um idioma pelo ID
-app.delete('/v1/controle-idiomas/idioma/:id', cors(), async function(request, response){
-
-    //Recebe o ID
-    let idIdioma = request.params.id
-
-    //Chama a função
-    let resultIdioma = await controllerIdioma.excluirIdioma(idIdioma)
-
-    response.status(resultIdioma.status_code)
-    response.json(resultIdioma)
-})
-
-//Endpoint para atualizar um idioma pelo ID
-app.put('/v1/controle-idiomas/idioma/:id', cors(), bodyParserJSON, async function(request, response){
-
-    //Rece o Content Type da requisição
-    let contentType = request.headers['content-type']
-
-    //Recebe o ID
-    let idIdioma = request.params.id
-
-    //Recebe os dados do corpo da requisição
-    let dadosBody = request.body
-
-    //Chama a função e encaminha os argumentos de ID, BODY e CONTENT-TYPE
-    let resultIdioma = await controllerIdioma.atualizarIdioma(idIdioma, dadosBody, contentType)
-
-    response.status(resultIdioma.status_code)
-    response.json(resultIdioma)
 })
 
 //------------------------------ENDPOINTS DO GENERO-----------------------------------//
@@ -487,77 +342,6 @@ app.put('/v1/controle-integrantes/integrante/:id', cors(), bodyParserJSON, async
 
     response.status(resultIntegrante.status_code)
     response.json(resultIntegrante)
-})
-
-//------------------------------ENDPOINTS DO CREDITADO-----------------------------------//
-
-//Endpoint para inserir um creditado
-app.post('/v1/controle-creditados/creditado', cors(), bodyParserJSON, async function(request, response){
-
-    //Recebe o CONTENT TYPE da requisição 
-    let contentType = request.headers['content-type']
-
-    //Recebe os dados do body da requisição
-    let dadosBody = request.body
-
-    //Chama a função da Controller para inserir os dados e aguarda o retorno da função
-    let resultCreditado = await controllerCreditado.inserirCreditado(dadosBody, contentType)
-
-    response.status(resultCreditado.status_code)
-    response.json(resultCreditado)
-})
-
-//Endpoint para listar as todos os creditados
-app.get('/v1/controle-creditados/creditado', cors(), async function(request, response){
-    let resultCreditado = await controllerCreditado.listarCreditados()
-
-    response.status(resultCreditado.status_code)
-    response.json(resultCreditado)
-})
-
-//Endpoint para buscar um creditado pelo ID
-app.get('/v1/controle-creditados/creditado/:id', cors(), async function(request, response){
-
-    //Recebe o ID
-    let idCreditado = request.params.id
-
-    //Chama a função
-    let resultCreditado = await controllerCreditado.buscarCreditado(idCreditado)
-
-    response.status(resultCreditado.status_code)
-    response.json(resultCreditado)
-})
-
-//Endpoint para deletar um creditado pelo ID
-app.delete('/v1/controle-creditados/creditado/:id', cors(), async function(request, response){
-
-    //Recebe o ID
-    let idCreditado = request.params.id
-
-    //Chama a função
-    let resultCreditado = await controllerCreditado.excluirCreditado(idCreditado)
-
-    response.status(resultCreditado.status_code)
-    response.json(resultCreditado)
-})
-
-//Endpoint para atualizar um creditado pelo ID
-app.put('/v1/controle-creditados/creditado/:id', cors(), bodyParserJSON, async function(request, response){
-
-    //Rece o Content Type da requisição
-    let contentType = request.headers['content-type']
-
-    //Recebe o ID
-    let idCreditado = request.params.id
-
-    //Recebe os dados do corpo da requisição
-    let dadosBody = request.body
-
-    //Chama a função e encaminha os argumentos de ID, BODY e CONTENT-TYPE
-    let resultCreditado = await controllerCreditado.atualizarCreditado(idCreditado, dadosBody, contentType)
-
-    response.status(resultCreditado.status_code)
-    response.json(resultCreditado)
 })
 
 //------------------------------ENDPOINTS DA BANDA-----------------------------------//

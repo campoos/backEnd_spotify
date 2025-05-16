@@ -12,9 +12,6 @@ const message = require('../../modulo/config.js')
 //Import do DAO para realizar o CRUD no Banco de dados
 const albumDAO = require('../../model/DAO/album.js')
 
-//Import das controller necessárias para fazer os relacionamentos
-const controllerBanda = require('../banda/controllerBanda.js')
-
 // Função para inserir um novo album
 const inserirAlbum = async function (album, contentType){
 
@@ -140,6 +137,7 @@ const listarAlbuns = async function (){
                 dadosAlbuns.items = resultAlbum.length
 
                 for(const itemAlbum of resultAlbum){
+
                     let dadosBanda = await controllerBanda.buscarBanda(itemAlbum.id_banda)
                     itemAlbum.banda = dadosBanda.bands
                     delete itemAlbum.id_banda
@@ -186,7 +184,7 @@ const buscarAlbum = async function (id){
                 for(const itemAlbum of resultAlbum){
 
                     let dadosBanda = await controllerBanda.buscarBanda(itemAlbum.id_banda)
-                    itemAlbum.banda = dadosBanda.nome_banda
+                    itemAlbum.banda = dadosBanda.bands
                     delete itemAlbum.id_banda
 
                     arrayAlbuns.push(itemAlbum)
