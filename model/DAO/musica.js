@@ -124,10 +124,48 @@ const selectByIdMusica = async function(id){
   }
 }
 
+//Função para buscar uma música pelo ID do album
+const selectMusicaByIdAlbum = async function(id){
+  try {
+    //Script SQL
+    let sql = `select * from tbl_musica where id_album = ${id}`
+
+    //Encaminha o script SQL para o Banco de Dados
+    let result = await prisma.$queryRawUnsafe(sql)
+
+    if(result)
+      return result //Retorna os dados do banco
+    else 
+      return false
+  } catch (error) {
+    return false
+  }
+}
+
+//Função para buscar o último ID do album
+const selectLastIdMusica = async function(){
+  try {
+    //Script SQL
+    let sql = `select id_musica from tbl_musica order by id_musica desc limit 1`
+
+    //Encaminha o script SQL para o Banco de Dados
+    let result = await prisma.$queryRawUnsafe(sql)
+
+    if(result)
+      return result //Retorna os dados do banco
+    else 
+      return false
+  } catch (error) {
+    return false
+  }
+}
+
 module.exports = {
     insertMusica,
     updateMusica,
     deleteMusica,
     selectAllMusica,
-    selectByIdMusica
+    selectByIdMusica,
+    selectMusicaByIdAlbum,
+    selectLastIdMusica
 }
