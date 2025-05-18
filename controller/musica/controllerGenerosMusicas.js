@@ -235,7 +235,7 @@ const buscarMusicaPorGenero = async function(idGenero){
                      //Criando um JSON de retorno de dados para a API
                     dadosMusica.status = true
                     dadosMusica.status_code = 200
-                    dadosMusica.filme = resultMusica
+                    dadosMusica.musics = resultMusica
 
                     return dadosMusica //200
                 }else{

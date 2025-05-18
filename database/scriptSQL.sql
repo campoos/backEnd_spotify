@@ -10,22 +10,13 @@ create table tbl_musica(
     duracao 			time not null,
     data_lancamento 	date not null,
     letra 				text,
-    link 				varchar(200)
-);
+    link 				varchar(200),
+	capa_url 			text not null,
+	id_album 			int not null,
 
-create table tbl_funcoes_creditados (
-	id_funcao_creditado int not null primary key auto_increment,
-	funcao varchar(100) not null
-);
-
-create table tbl_creditados (
-	id_creditado int not null primary key auto_increment,
-	nome_creditado varchar(100) not null
-);
-
-create table tbl_idiomas (
-	id_idioma int not null primary key auto_increment,
-	nome_idioma varchar(100) not null
+	constraint fk_musicas_albuns
+	foreign key (id_album)
+	references tbl_albuns(id_album)	
 );
 
 create table tbl_usuarios (
@@ -75,6 +66,32 @@ create table tbl_albuns (
 	constraint fk_albuns_bandas
 	foreign key (id_banda)
 	references tbl_bandas(id_banda)	
+);
+
+create table tbl_generos_musicas (
+	id_genero_musica int not null primary key auto_increment,
+	id_genero int not null,
+	id_musica int not null,
+	constraint fk_generos_musicas
+	foreign key (id_genero)
+	references tbl_generos(id_genero),	
+    
+    constraint fk_musicas_generos
+    foreign key (id_musica)
+    references tbl_musica(id_musica)
+);
+
+create table tbl_generos_bandas (
+	id_genero_banda int not null primary key auto_increment,
+	id_genero int not null,
+	id_banda int not null,
+	constraint fk_generos_bandas
+	foreign key (id_genero)
+	references tbl_generos(id_genero),	
+    
+    constraint fk_bandas_generos
+    foreign key (id_banda)
+    references tbl_bandas(id_banda)
 );
 
 show tables;

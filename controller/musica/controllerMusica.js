@@ -25,6 +25,7 @@ const inserirMusica = async function (musica, contentType){
                 musica.data_lancamento == ""       || musica.data_lancamento == null|| musica.data_lancamento == undefined || musica.data_lancamento.length > 10  || 
                 musica.letra           == undefined||
                 musica.link            == undefined|| musica.link.length > 200      ||
+                musica.capa_url        == undefined||
                 musica.id_album        == ""       || musica.id_album        == undefined
                 )
             {
@@ -66,6 +67,7 @@ const atualizarMusica = async function (id, musica, contentType){
                 musica.data_lancamento == ""       || musica.data_lancamento == null      || musica.data_lancamento == undefined || musica.data_lancamento.length > 10  || 
                 musica.letra           == undefined||
                 musica.link            == undefined|| musica.link.length     > 200        ||
+                musica.capa_url        == undefined||
                 musica.id_album        == ""       || musica.id_album        == undefined
                 )
             {

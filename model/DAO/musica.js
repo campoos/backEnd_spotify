@@ -22,6 +22,7 @@ const insertMusica = async function(musica){
                                           data_lancamento, 
                                           letra, 
                                           link,
+                                          capa_url,
                                           id_album
                                         )
                 values                 ( 
@@ -30,6 +31,7 @@ const insertMusica = async function(musica){
                                           '${musica.data_lancamento}', 
                                           '${musica.letra}', 
                                           '${musica.link}',
+                                          '${musica.capa_url}',
                                           '${musica.id_album}'
                                         )`
 
@@ -55,6 +57,7 @@ const updateMusica = async function(musica){
                                           data_lancamento = '${musica.data_lancamento}', 
                                           letra           = '${musica.letra}', 
                                           link            = '${musica.link}',
+                                          capa_url        = '${musica.capa_url}',
                                           id_album        = '${musica.id_album}'
                                   where id_musica = ${musica.id}`
 

@@ -12,6 +12,9 @@ const message = require('../../modulo/config.js')
 //Import do DAO para realizar o CRUD no Banco de dados
 const generoDAO = require('../../model/DAO/genero.js')
 
+//Import das controller necessárias para fazer os relacionamentos
+const controllerGeneroMusica = require('../musica/controllerGenerosMusicas.js')
+
 // Função para inserir um novo genero
 const inserirGenero = async function (genero, contentType){
 
@@ -113,6 +116,7 @@ const exlcuirGenero = async function (id){
 // Função para retornar uma lista de generos
 const listarGeneros = async function (){
     try {
+        let arrayGeneros = []
         //Criando um objeto JSON
         let dadosGeneros = {
 
@@ -126,10 +130,18 @@ const listarGeneros = async function (){
                 //Cria um JSON para colocar o ARRAY de generos
                 dadosGeneros.status = true,
                 dadosGeneros.status_code = 200,
-                dadosGeneros.items = resultGenero.length,
-                dadosGeneros.genres = resultGenero
+                dadosGeneros.items = resultGenero.length
 
-                return  dadosGeneros
+                for(const itemGenero of resultGenero){
+                    let dadosMusicas = await controllerGeneroMusica.buscarMusicaPorGenero(itemGenero.id_genero)
+                    itemGenero.musics = dadosMusicas.musics
+
+                    arrayGeneros.push(itemGenero)
+                }
+
+                dadosGeneros.generos = arrayGeneros
+
+                return dadosGeneros
             }else{
                 return message.ERROR_NOT_FOUND //404
             }
@@ -147,21 +159,33 @@ const buscarGenero = async function (id){
         if (id == '' || id == undefined || id == null || isNaN(id)){
             return message.ERROR_REQUIRED_FIELDS
         }else{
+            let arrayGeneros = []
             //Criando um objeto JSON
             let dadosGeneros = {}
 
             //Chama a função para retornar as músicas do Banco de Dados
             let resultGenero = await generoDAO.selectByIdGenero(id)
 
+
+
             if(resultGenero != false || typeof(resultGenero) == 'object'){
                 if(resultGenero.length > 0){
 
-                    //Cria um JSON para colocar o ARRAY de funções de creditado
-                    dadosGeneros.status = true,
-                    dadosGeneros.status_code = 200,
-                    dadosGeneros.genres = resultGenero
+                //Cria um JSON para colocar o ARRAY de generos
+                dadosGeneros.status = true,
+                dadosGeneros.status_code = 200,
+                dadosGeneros.items = resultGenero.length
 
-                    return  dadosGeneros
+                for(const itemGenero of resultGenero){
+                    let dadosMusicas = await controllerGeneroMusica.buscarMusicaPorGenero(itemGenero.id_genero)
+                    itemGenero.musics = dadosMusicas.musics
+
+                    arrayGeneros.push(itemGenero)
+                }
+
+                dadosGeneros.genero = arrayGeneros
+
+                return dadosGeneros
                 }else{
                     return message.ERROR_NOT_FOUND //404
                 }
