@@ -12,6 +12,9 @@ const message = require('../../modulo/config.js')
 //Import do DAO para realizar o CRUD no Banco de dados
 const bandaDAO = require('../../model/DAO/banda.js')
 
+//Import das controller necessárias para fazer os relacionamentos
+const controllerGeneroBanda = require('./controllerGeneroBanda.js')
+
 // Função para inserir uma nova banda
 const inserirBanda = async function (banda, contentType){
 
@@ -46,7 +49,25 @@ const inserirBanda = async function (banda, contentType){
                 // Encaminha os dados para o DAO realizar o insert
                 let resultBanda = await bandaDAO.insertBanda(banda)
 
-                if (resultBanda) {
+                let lastIdBanda = await bandaDAO.selectLastIdBanda()
+                let extracaoIdLastBanda = lastIdBanda[0].id_banda
+
+                let resultRelacao = true
+
+                for (const item of banda.generos) {
+                    let objeto = {
+                        id_genero: item.id_genero,
+                        id_banda: extracaoIdLastBanda
+                    }
+
+                    let resultado = await controllerGeneroBanda.inserirGeneroBanda(objeto)
+                    if (!resultado) {
+                        resultRelacao = false
+                        break
+                    }
+                }
+
+                if (resultBanda && resultRelacao) {
                     return message.SUCESS_CREATED_ITEM // 201
                 } else {
                     return message.ERROR_INTERNAL_SERVER_MODEL // 500
@@ -100,9 +121,27 @@ const atualizarBanda = async function (id, banda, contentType){
 
                         //Adiciona o atributo do ID no JSON com s dados recebidos no corpo da requisição
                         banda.id = id
+
+                        await controllerGeneroBanda.excluirGeneroBandaByIdBanda(id)
+
                         let resultBanda = await bandaDAO.updateBanda(banda)
 
-                        if(resultBanda){
+                        let resultRelacao = true
+
+                        for (const item of banda.generos){
+                            let objeto = {
+                                id_genero: item.id_genero,
+                                id_banda: banda.id
+                            }
+
+                            let resultado = await controllerGeneroBanda.inserirGeneroBanda(objeto)
+                            if (!resultado){
+                                resultRelacao = false
+                                break
+                            }
+                        }
+
+                        if(resultRelacao && resultBanda){
                             return message.SUCESS_UPDATED_ITEM //200
                         }else {
                             return message.ERROR_INTERNAL_SERVER_MODEL //500
@@ -131,9 +170,10 @@ const excluirBanda = async function (id){
 
             if(resultBanda != false || typeof(resultBanda) == 'object'){
                 if(resultBanda.length > 0){
+                    let deleteRelacao = await controllerGeneroBanda.excluirGeneroBandaByIdBanda(id)
                     let result = await bandaDAO.deleteBanda(id)
 
-                    if (result){
+                    if (result && deleteRelacao){
                         return message.SUCESS_DELETED_ITEM //200
                     }else {
                         return message.ERROR_INTERNAL_SERVER_MODEL //500
@@ -153,6 +193,7 @@ const excluirBanda = async function (id){
 // Função para retornar uma lista de bandas
 const listarBandas = async function (){
     try {
+        let arrayBandas = []
         //Criando um objeto JSON
         let dadosBandas = {
 
@@ -166,8 +207,17 @@ const listarBandas = async function (){
                 //Cria um JSON para colocar o ARRAY de integrantes
                 dadosBandas.status = true,
                 dadosBandas.status_code = 200,
-                dadosBandas.items = resultBanda.length,
-                dadosBandas.bands = resultBanda
+                dadosBandas.items = resultBanda.length
+
+                 
+                for (const itemBanda of resultBanda){
+                    let dadosGenero = await controllerGeneroBanda.buscarGeneroPorBanda(itemBanda.id_banda)
+                    itemBanda.genres = dadosGenero.generos
+           
+                    arrayBandas.push(itemBanda)
+                }
+
+                dadosBandas.bands = arrayBandas
 
                 return  dadosBandas
             }else{
@@ -183,11 +233,11 @@ const listarBandas = async function (){
 
 // Função para retornar uma banda pelo ID
 const buscarBanda = async function (id){
-
     try {
         if (id == '' || id == undefined || id == null || isNaN(id)){
             return message.ERROR_REQUIRED_FIELDS
         }else{
+            let arrayBandas = []
             //Criando um objeto JSON
             let dadosBandas = {}
 
@@ -197,12 +247,21 @@ const buscarBanda = async function (id){
             if(resultBanda != false || typeof(resultBanda) == 'object'){
                 if(resultBanda.length > 0){
 
-                    //Cria um JSON para colocar o ARRAY de músicas
+                    //Cria um JSON para colocar o ARRAY de integrantes
                     dadosBandas.status = true,
                     dadosBandas.status_code = 200,
-                    dadosBandas.bands = resultBanda
+                    dadosBandas.items = resultBanda.length
 
-                    return  dadosBandas
+                    for (const itemBanda of resultBanda){
+                        let dadosGenero = await controllerGeneroBanda.buscarGeneroPorBanda(itemBanda.id_banda)
+                        itemBanda.genres = dadosGenero.generos
+            
+                        arrayBandas.push(itemBanda)
+                    }
+
+                    dadosBandas.bands = arrayBandas
+
+                    return dadosBandas
                 }else{
                     return message.ERROR_NOT_FOUND //404
                 }

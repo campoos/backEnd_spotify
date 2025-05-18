@@ -241,6 +241,7 @@ const buscarMusicaPeloAlbum = async function (id){
         if (id == '' || id == undefined || id == null || isNaN(id)){
             return message.ERROR_REQUIRED_FIELDS
         }else{
+            let arrayMusicas = []
             //Criando um objeto JSON
             let dadosMusica = {}
 
@@ -254,7 +255,15 @@ const buscarMusicaPeloAlbum = async function (id){
                 dadosMusica.status = true,
                 dadosMusica.status_code = 200,
                 dadosMusica.items = resultMusica.length
-                dadosMusica.musics = resultMusica
+
+                for (const itemMusica of resultMusica){
+                    let dadosGenero = await controllerGeneroMusica.buscarGeneroPorMusica(itemMusica.id_musica)
+                    itemMusica.genres = dadosGenero.generos
+                    
+                    arrayMusicas.push(itemMusica)
+                }
+
+                dadosMusica.musics = arrayMusicas
 
                 return  dadosMusica
                 }else{

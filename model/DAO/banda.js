@@ -126,10 +126,29 @@ const selectByIdBanda = async function(id){
   }
 }
 
+//Função para buscar o último ID da banda
+const selectLastIdBanda = async function(){
+  try {
+    //Script SQL
+    let sql = `select id_banda from tbl_bandas order by id_banda desc limit 1`
+
+    //Encaminha o script SQL para o Banco de Dados
+    let result = await prisma.$queryRawUnsafe(sql)
+
+    if(result)
+      return result //Retorna os dados do banco
+    else 
+      return false
+  } catch (error) {
+    return false
+  }
+}
+
 module.exports = {
     insertBanda,
     updateBanda,
     deleteBanda,
     selectAllBandas,
-    selectByIdBanda
+    selectByIdBanda,
+    selectLastIdBanda
 }

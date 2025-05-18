@@ -37,18 +37,18 @@ const insertGeneroBanda = async function(generoBanda){
       return false
   }
 }
-///////////////////////////////////
+
 //Função para atualizar um genero_banda existente
 const updateGeneroBanda = async function(generoBanda){
   try {
       let sql = `update tbl_generos_bandas set      id_genero      = ${generoMusica.id_genero},
                                                     id_musica      = ${generoMusica.id_musica}
                                         
-                            where id = ${generoMusica.id}                
+                            where id_genero_banda = ${generoMusica.id}                
                             `
-      let resultGeneroMusica = await prisma.$executeRawUnsafe(sql)
+      let resultGeneroBanda = await prisma.$executeRawUnsafe(sql)
 
-      if(resultGeneroMusica)
+      if(resultGeneroBanda)
         return true
       else
         return false
@@ -57,10 +57,10 @@ const updateGeneroBanda = async function(generoBanda){
   }
 }
 
-//Função para excluir um genero_musica existente
-const deleteGeneroMusica = async function(id){
+//Função para excluir um genero_banda existente
+const deleteGeneroBanda = async function(id){
   try {
-    let sql = `delete from tbl_generos_musicas where id = ${id}`
+    let sql = `delete from tbl_generos_bandas where id_genero_banda = ${id}`
 
     let result = await prisma.$executeRawUnsafe(sql)
 
@@ -73,10 +73,10 @@ const deleteGeneroMusica = async function(id){
   }
 }
 
-//Função para excluir um genero_musica existente pelo id da musica
-const deleteGeneroMusicaByIdMusica = async function(id){
+//Função para excluir um genero_banda existente pelo id da banda
+const deleteGeneroBandaByIdBanda = async function(id){
   try {
-    let sql = `delete from tbl_generos_musicas where id_musica = ${id}`
+    let sql = `delete from tbl_generos_bandas where id_banda = ${id}`
 
     let result = await prisma.$executeRawUnsafe(sql)
 
@@ -89,12 +89,12 @@ const deleteGeneroMusicaByIdMusica = async function(id){
   }
 }
 
-//Função para retornar todos os generos_musicas existentes
-const selectAllGenerosMusicas = async function(){
+//Função para retornar todos os generos_bandas existentes
+const selectAllGenerosBandas = async function(){
 
     try {
       //ScriptSQL para retornar todos os dados
-      let sql = 'select * from tbl_generos_musicas order by id desc'
+      let sql = 'select * from tbl_generos_bandas order by id desc'
 
       //Executa o scriptSQL no BD e aguarda o retorno dos dados
       let result = await prisma.$queryRawUnsafe(sql)
@@ -109,10 +109,10 @@ const selectAllGenerosMusicas = async function(){
     }
 }
 
-//Função para buscar um genero_musica pelo ID
-const selectByIdGeneroMusica = async function(id){
+//Função para buscar um genero_banda pelo ID
+const selectByIdGeneroBanda = async function(id){
   try {
-    let sql = `select * from tbl_generos_musicas where id = ${id}`
+    let sql = `select * from tbl_generos_bandas where id = ${id}`
 
     let result = await prisma.$queryRawUnsafe(sql)
 
@@ -125,15 +125,15 @@ const selectByIdGeneroMusica = async function(id){
   }
 }
 
-//Função para retornar as musicas pelo genero
-const selectMusicasByIdGenero = async function(idGenero){
+//Função para retornar as bandas pelo genero
+const selectBandasByIdGenero = async function(idGenero){
   try {
-      let sql = `select tbl_musica.* from tbl_musica 
-                                            inner join tbl_generos_musicas
-                                              on tbl_musica.id_musica = tbl_generos_musicas.id_musica
+      let sql = `select tbl_bandas.* from tbl_bandas 
+                                            inner join tbl_generos_bandas
+                                              on tbl_bandas.id_banda = tbl_generos_bandas.id_banda
                                             inner join tbl_generos
-                                              on tbl_generos.id_genero = tbl_generos_musicas.id_genero
-                  where tbl_generos_musicas.id_genero = ${idGenero}`
+                                              on tbl_generos.id_genero = tbl_generos_bandas.id_genero
+                  where tbl_generos_bandas.id_genero = ${idGenero}`
 
       let result = await prisma.$queryRawUnsafe(sql)
 
@@ -146,15 +146,15 @@ const selectMusicasByIdGenero = async function(idGenero){
   }
 }
 
-//Função para retornar os generos pela musica
-const selectGeneroByIdMusica = async function(idMusica){
+//Função para retornar os generos pela banda
+const selectGeneroByIdBanda = async function(idBanda){
  try {
-      let sql = `select tbl_generos.* from tbl_musica 
-                                            inner join tbl_generos_musicas
-                                              on tbl_musica.id_musica = tbl_generos_musicas.id_musica
+      let sql = `select tbl_generos.* from tbl_bandas 
+                                            inner join tbl_generos_bandas
+                                              on tbl_bandas.id_banda = tbl_generos_bandas.id_banda
                                             inner join tbl_generos
-                                              on tbl_generos.id_genero = tbl_generos_musicas.id_genero
-                  where tbl_generos_musicas.id_musica = ${idMusica}`
+                                              on tbl_generos.id_genero = tbl_generos_bandas.id_genero
+                  where tbl_generos_bandas.id_banda = ${idBanda}`
                   
       let result = await prisma.$queryRawUnsafe(sql)
 
@@ -169,12 +169,12 @@ const selectGeneroByIdMusica = async function(idMusica){
 
 
 module.exports = {
-    insertGeneroMusica,
-    updateGeneroMusica,
-    deleteGeneroMusica,
-    deleteGeneroMusicaByIdMusica,
-    selectAllGenerosMusicas,
-    selectByIdGeneroMusica,
-    selectMusicasByIdGenero,
-    selectGeneroByIdMusica
+    insertGeneroBanda,
+    updateGeneroBanda,
+    deleteGeneroBanda,
+    deleteGeneroBandaByIdBanda,
+    selectAllGenerosBandas,
+    selectByIdGeneroBanda,
+    selectBandasByIdGenero,
+    selectGeneroByIdBanda
 } 
