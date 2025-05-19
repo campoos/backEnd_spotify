@@ -13,7 +13,6 @@ const message = require('../../modulo/config.js')
 const albumDAO = require('../../model/DAO/album.js')
 
 //Import das controller necessárias para fazer os relacionamentos
-const controllerBanda        = require('../banda/controllerBanda.js')
 const controllerMusica       = require('../musica/controllerMusica.js')
 
 // Função para inserir um novo album
@@ -141,11 +140,6 @@ const listarAlbuns = async function (){
                 dadosAlbuns.items = resultAlbum.length
 
                 for(const itemAlbum of resultAlbum){
-
-                    let dadosBanda = await controllerBanda.buscarBanda(itemAlbum.id_banda)
-                    itemAlbum.banda = dadosBanda.bands
-                    delete itemAlbum.id_banda
-
                     let dadosMusica = await controllerMusica.buscarMusicaPeloAlbum(itemAlbum.id_album)
                     itemAlbum.musics = dadosMusica.musics
 
@@ -189,10 +183,8 @@ const buscarAlbum = async function (id){
                 dadosAlbuns.items = resultAlbum.length
 
                 for(const itemAlbum of resultAlbum){
-
-                    let dadosBanda = await controllerBanda.buscarBanda(itemAlbum.id_banda)
-                    itemAlbum.banda = dadosBanda.bands
-                    delete itemAlbum.id_banda
+                    let dadosMusica = await controllerMusica.buscarMusicaPeloAlbum(itemAlbum.id_album)
+                    itemAlbum.musics = dadosMusica.musics
 
                     arrayAlbuns.push(itemAlbum)
                 }
@@ -212,12 +204,55 @@ const buscarAlbum = async function (id){
     }
 }
 
+// Função para retornar um album pelo ID da banda
+const buscarAlbumPorBanda = async function (id){
+    try {
+        if (id == '' || id == undefined || id == null || isNaN(id)){
+            return message.ERROR_REQUIRED_FIELDS
+        }else{
+            let arrayAlbuns = []
 
+            //Criando um objeto JSON
+            let dadosAlbuns = {}
+
+            //Chama a função para retornar os albuns do Banco de Dados
+            let resultAlbum = await albumDAO.buscarAlbumByIdBanda(id)
+
+            if(resultAlbum != false || typeof(resultAlbum) == 'object'){
+                if(resultAlbum.length > 0){
+
+                //Cria um JSON para colocar o ARRAY de integrantes
+                dadosAlbuns.status = true,
+                dadosAlbuns.status_code = 200,
+                dadosAlbuns.items = resultAlbum.length
+
+                for(const itemAlbum of resultAlbum){
+                    let dadosMusica = await controllerMusica.buscarMusicaPeloAlbum(itemAlbum.id_album)
+                    itemAlbum.musics = dadosMusica.musics
+
+                    arrayAlbuns.push(itemAlbum)
+                }
+
+                dadosAlbuns.albuns = arrayAlbuns
+
+                return  dadosAlbuns
+                }else{
+                    return message.ERROR_NOT_FOUND //404
+                }
+            }else {
+                return message.ERROR_INTERNAL_SERVER_MODEL //500
+            }
+        }
+    } catch (error) {
+        return message.ERROR_INTERNAL_SERVER_CONTROLLER //500
+    }
+}
 
 module.exports = {
     inserirAlbum,
     atualizarAlbum,
     excluirAlbum,
     listarAlbuns,
-    buscarAlbum
+    buscarAlbum,
+    buscarAlbumPorBanda
 }

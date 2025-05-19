@@ -41,10 +41,10 @@ const insertGeneroBanda = async function(generoBanda){
 //Função para atualizar um genero_banda existente
 const updateGeneroBanda = async function(generoBanda){
   try {
-      let sql = `update tbl_generos_bandas set      id_genero      = ${generoMusica.id_genero},
-                                                    id_musica      = ${generoMusica.id_musica}
+      let sql = `update tbl_generos_bandas set      id_genero      = ${generoBanda.id_genero},
+                                                    id_banda       = ${generoBanda.id_banda}
                                         
-                            where id_genero_banda = ${generoMusica.id}                
+                            where id_genero_banda = ${generoBanda.id}                
                             `
       let resultGeneroBanda = await prisma.$executeRawUnsafe(sql)
 
@@ -112,7 +112,7 @@ const selectAllGenerosBandas = async function(){
 //Função para buscar um genero_banda pelo ID
 const selectByIdGeneroBanda = async function(id){
   try {
-    let sql = `select * from tbl_generos_bandas where id = ${id}`
+    let sql = `select * from tbl_generos_bandas where id_genero_banda = ${id}`
 
     let result = await prisma.$queryRawUnsafe(sql)
 

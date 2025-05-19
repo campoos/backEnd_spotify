@@ -1,5 +1,5 @@
 /**********************************************************************************
- * Objetivo: Controller responsável pela regra de negócio referente ao CRUD de Filme Genero
+ * Objetivo: Controller responsável pela regra de negócio referente ao CRUD de Genero Musicas
  * Data: 11/02/2025
  * Autor: Marcel
  * Versão: 1.0
@@ -41,7 +41,7 @@ const atualizarGeneroMusica = async function(id, generoMusica, contentType){
             {
                 if (generoMusica.id_genero_musica == '' || generoMusica.id_genero_musica == undefined || generoMusica.id_genero_musica == null || isNaN(generoMusica.id_genero_musica) || generoMusica.id_genero_musica <= 0 ||
                     generoMusica.id_genero        == '' || generoMusica.id_genero        == undefined || generoMusica.id_genero        == null || isNaN(generoMusica.id_genero)        || generoMusica.id_genero        <=0  ||
-                    generoMusica.musica           == '' || generoMusica.musica           == undefined || generoMusica.musica           == null || isNaN(generoMusica.musica)           || generoMusica.musica           <=0
+                    generoMusica.id_musica        == '' || generoMusica.id_musica        == undefined || generoMusica.id_musica        == null || isNaN(generoMusica.id_musica)        || generoMusica.id_musica        <=0
                 )
                 {
                     return message.ERROR_REQUIRED_FIELDS //400

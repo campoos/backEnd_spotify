@@ -94,6 +94,19 @@ create table tbl_generos_bandas (
     references tbl_bandas(id_banda)
 );
 
+create table tbl_musicas_bandas (
+	id_musica_banda int not null primary key auto_increment,
+	id_musica int not null,
+	id_banda int not null,
+	constraint fk_musicas_bandas
+	foreign key (id_musica)
+	references tbl_musica(id_musica),	
+    
+    constraint fk_bandas_musicas
+    foreign key (id_banda)
+    references tbl_bandas(id_banda)
+);
+
 show tables;
 
 drop table tbl_teste;

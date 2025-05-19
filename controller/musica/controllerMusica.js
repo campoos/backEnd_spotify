@@ -14,6 +14,7 @@ const musicaDAO = require('../../model/DAO/musica.js')
 
 //Import das controller necessárias para fazer os relacionamentos
 const controllerGeneroMusica = require('./controllerGenerosMusicas.js')
+const controllerMusicaBanda  = require('./controllerMusicasBandas.js')
 
 // Função para inserir uma nova música
 const inserirMusica = async function (musica, contentType){
@@ -44,6 +45,15 @@ const inserirMusica = async function (musica, contentType){
                 }
                 resultRelacao = controllerGeneroMusica.inserirGeneroMusica(objeto)
                });
+
+                musica.bandas.forEach((item) => {
+                let objeto = {
+                    id_musica: extracaoIdLastMusica,
+                    id_banda: item.id_banda
+                }
+                resultRelacao = controllerMusicaBanda.inserirMusicaBanda(objeto)
+               });
+
                 if (resultRelacao && resultMusica){
                     return message.SUCESS_CREATED_ITEM //201
                 }else {
@@ -84,6 +94,7 @@ const atualizarMusica = async function (id, musica, contentType){
                         musica.id = id
 
                         await controllerGeneroMusica.excluirGeneroMusicaByIdMusica(id)
+                        await controllerMusicaBanda.excluirMusicaBandaByIdMusica(id)
 
                         let resultMusica = await musicaDAO.updateMusica(musica)
 
@@ -96,6 +107,19 @@ const atualizarMusica = async function (id, musica, contentType){
                             }
                   
                             let resultado = await controllerGeneroMusica.inserirGeneroMusica(objeto)
+                            if (!resultado) {
+                                resultRelacao = false
+                                break
+                            }
+                        }
+
+                        for (const item of musica.bandas) {
+                            let objeto = {
+                                id_musica: musica.id,
+                                id_banda: item.id_banda
+                            }
+                  
+                            let resultado = await controllerMusicaBanda.inserirMusicaBanda(objeto)
                             if (!resultado) {
                                 resultRelacao = false
                                 break
@@ -131,10 +155,11 @@ const excluirMusica = async function (id){
 
             if(resultMusica != false || typeof(resultMusica) == 'object'){
                 if(resultMusica.length > 0){
-                    let deleteRelacao = await controllerGeneroMusica.excluirGeneroMusicaByIdMusica(id)
+                    let deleteRelacao1 = await controllerGeneroMusica.excluirGeneroMusicaByIdMusica(id)
+                    let deleteRelacao2 = await controllerMusicaBanda.excluirMusicaBandaByIdMusica(id)
                     let result = await musicaDAO.deleteMusica(id)
 
-                    if (result && deleteRelacao){
+                    if (result && deleteRelacao1 && deleteRelacao2){
                         return message.SUCESS_DELETED_ITEM //200
                     }else {
                         return message.ERROR_INTERNAL_SERVER_MODEL //500
@@ -174,6 +199,9 @@ const listarMusica = async function (){
                 for (const itemMusica of resultMusica){
                     let dadosGenero = await controllerGeneroMusica.buscarGeneroPorMusica(itemMusica.id_musica)
                     itemMusica.genres = dadosGenero.generos
+
+                    let dadosBanda = await controllerMusicaBanda.buscarBandaPorMusica(itemMusica.id_musica)
+                    itemMusica.bandas = dadosBanda.bandas
                     
                     arrayMusicas.push(itemMusica)
                 }
@@ -216,6 +244,9 @@ const buscarMusica = async function (id){
                 for (const itemMusica of resultMusica){
                     let dadosGenero = await controllerGeneroMusica.buscarGeneroPorMusica(itemMusica.id_musica)
                     itemMusica.genres = dadosGenero.generos
+
+                    let dadosBanda = await controllerMusicaBanda.buscarBandaPorMusica(itemMusica.id_musica)
+                    itemMusica.bandas = dadosBanda.bandas
                     
                     arrayMusicas.push(itemMusica)
                 }

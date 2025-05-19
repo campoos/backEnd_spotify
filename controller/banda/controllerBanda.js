@@ -14,6 +14,8 @@ const bandaDAO = require('../../model/DAO/banda.js')
 
 //Import das controller necessárias para fazer os relacionamentos
 const controllerGeneroBanda = require('./controllerGeneroBanda.js')
+const controllerMusicaBanda = require('../musica/controllerMusicasBandas.js')
+const controllerAlbum       = require('../album/controllerAlbum.js')
 
 // Função para inserir uma nova banda
 const inserirBanda = async function (banda, contentType){
@@ -170,10 +172,11 @@ const excluirBanda = async function (id){
 
             if(resultBanda != false || typeof(resultBanda) == 'object'){
                 if(resultBanda.length > 0){
-                    let deleteRelacao = await controllerGeneroBanda.excluirGeneroBandaByIdBanda(id)
+                    let deleteRelacao1 = await controllerGeneroBanda.excluirGeneroBandaByIdBanda(id)
+                    let deleteRelacao2 = await controllerMusicaBanda.excluirMusicaBandaByIdBanda(id)
                     let result = await bandaDAO.deleteBanda(id)
 
-                    if (result && deleteRelacao){
+                    if (result && deleteRelacao1 && deleteRelacao2){
                         return message.SUCESS_DELETED_ITEM //200
                     }else {
                         return message.ERROR_INTERNAL_SERVER_MODEL //500
@@ -213,6 +216,9 @@ const listarBandas = async function (){
                 for (const itemBanda of resultBanda){
                     let dadosGenero = await controllerGeneroBanda.buscarGeneroPorBanda(itemBanda.id_banda)
                     itemBanda.genres = dadosGenero.generos
+
+                    let dadosAlbuns = await controllerAlbum.buscarAlbumPorBanda(itemBanda.id_banda)
+                    itemBanda.albuns = dadosAlbuns.albuns
            
                     arrayBandas.push(itemBanda)
                 }

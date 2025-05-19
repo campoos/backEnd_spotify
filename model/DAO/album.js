@@ -117,10 +117,30 @@ const selectByIdAlbum = async function(id){
   }
 }
 
+//Função para buscar uma album pelo ID da banda
+const buscarAlbumByIdBanda = async function(id){
+  try {
+    //Script SQL
+    let sql = `select * from tbl_albuns where id_banda = ${id}`
+
+    //Encaminha o script SQL para o Banco de Dados
+    let result = await prisma.$queryRawUnsafe(sql)
+
+    if(result)
+      return result //Retorna os dados do banco
+    else 
+      return false
+  } catch (error) {
+    return false
+  }
+}
+
+
 module.exports = {
     insertAlbum,
     updateAlbum,
     deleteAlbum,
     selectAllAlbuns,
-    selectByIdAlbum
+    selectByIdAlbum,
+    buscarAlbumByIdBanda
 }
