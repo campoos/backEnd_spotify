@@ -45,18 +45,6 @@ create table tbl_bandas (
 	email_contato varchar(100)
 );
 
-create table tbl_funcoes_integrantes (
-	id_funcao_integrante int not null primary key auto_increment,
-	funcao varchar(100) not null
-);
-
-create table tbl_integrantes (
-	id_integrante int not null primary key auto_increment,
-	nome_verdadeiro varchar(100),
-	nome_artistico varchar(100) not null,
-	biografia varchar(500)
-);
-
 create table tbl_albuns (
 	id_album int not null primary key auto_increment,
 	titulo varchar(45) not null,
