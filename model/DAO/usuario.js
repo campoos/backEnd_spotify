@@ -123,10 +123,29 @@ const selectByIdUsuario = async function(id){
   }
 }
 
+//Função para buscar um usuario pelo email e senha
+const loginUsuario = async function(dados){
+  try {
+    //Script SQL
+    let sql = `select * from tbl_usuarios where email = '${dados.email}' and senha = '${dados.senha}'`
+
+    //Encaminha o script SQL para o Banco de Dados
+    let result = await prisma.$queryRawUnsafe(sql)
+
+    if(result)
+      return result //Retorna os dados do banco
+    else 
+      return false
+  } catch (error) {
+    return false
+  }
+}
+
 module.exports = {
     insertUsuario,
     updateUsuario,
     deleteUsuario,
     selectAllUsuarios,
-    selectByIdUsuario
+    selectByIdUsuario,
+    loginUsuario
 }

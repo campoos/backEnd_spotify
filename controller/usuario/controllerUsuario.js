@@ -193,6 +193,39 @@ const buscarUsuario = async function (id){
     }
 }
 
+// Função para retornar um usuario pelo ID
+const buscarUsuarioLogin = async function (dados){
+    try {
+        if ( dados.email == ""   || dados.email == null || dados.email == undefined || dados.email.length > 100 ||
+             dados.senha == ""   || dados.senha == null || dados.senha == undefined || dados.senha.length > 45){
+            return message.ERROR_REQUIRED_FIELDS
+        }else{
+            //Criando um objeto JSON
+            let dadosUsuario = {}
+
+            //Chama a função para retornar as músicas do Banco de Dados
+            let resultUsuario = await usuarioDAO.loginUsuario(dados)
+
+            if(resultUsuario != false || typeof(resultUsuario) == 'object'){
+                if(resultUsuario.length > 0){
+
+                    //Cria um JSON para colocar o ARRAY de músicas
+                    dadosUsuario.status = true,
+                    dadosUsuario.status_code = 200,
+                    dadosUsuario.musics = resultUsuario
+
+                    return  dadosUsuario
+                }else{
+                    return message.ERROR_NOT_FOUND //404
+                }
+            }else {
+                return message.ERROR_INTERNAL_SERVER_MODEL //500
+            }
+        }
+    } catch (error) {
+        return message.ERROR_INTERNAL_SERVER_CONTROLLER //500
+    }
+}
 
 
 module.exports = {
@@ -200,5 +233,6 @@ module.exports = {
     atualizarUsuario,
     excluirUsuario,
     listarUsuarios,
-    buscarUsuario
+    buscarUsuario,
+    buscarUsuarioLogin
 }

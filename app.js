@@ -310,6 +310,22 @@ app.get('/v1/controle-usuarios/usuario/:id', cors(), async function(request, res
     response.json(resultUsuario)
 })
 
+//Endpoint para buscar um usuario para login
+app.get('/v1/controle-usuarios/usuario-login', cors(), bodyParserJSON, async function(request, response){
+
+    //Recebe o CONTENT TYPE da requisição 
+    let contentType = request.headers['content-type']
+
+    //Recebe os dados do body da requisição
+    let dadosBody = request.body
+
+    //Chama a função da Controller para inserir os dados e aguarda o retorno da função
+    let resultUsuario = await controllerUsuario.buscarUsuarioLogin(dadosBody, contentType)
+
+    response.status(resultUsuario.status_code)
+    response.json(resultUsuario)
+})
+
 //Endpoint para deletar um usuario pelo ID
 app.delete('/v1/controle-usuarios/usuario/:id', cors(), async function(request, response){
 
