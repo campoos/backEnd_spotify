@@ -95,6 +95,20 @@ create table tbl_musicas_bandas (
     references tbl_bandas(id_banda)
 );
 
+create table tbl_curtidas (
+	id_curtida int not null primary key auto_increment,
+	data_curtida date not null,
+	id_usuario int not null,
+	id_musica int not null,
+	constraint fk_usuario_musica
+	foreign key (id_usuario)
+	references tbl_usuarios(id_usuario),	
+    
+    constraint fk_musica_usuario
+    foreign key (id_musica)
+    references tbl_musica(id_musica)
+)
+
 show tables;
 
 drop table tbl_teste;
