@@ -89,6 +89,22 @@ const deleteGeneroBandaByIdBanda = async function(id){
   }
 }
 
+//Função para excluir um genero_banda existente pelo id do genero
+const deleteGeneroBandaByIdGenero = async function(id){
+  try {
+    let sql = `delete from tbl_generos_bandas where id_genero = ${id}`
+
+    let result = await prisma.$executeRawUnsafe(sql)
+
+    if (result)
+      return true
+    else 
+      return false
+  } catch (error) {
+    return false
+  }
+}
+
 //Função para retornar todos os generos_bandas existentes
 const selectAllGenerosBandas = async function(){
 
@@ -173,6 +189,7 @@ module.exports = {
     updateGeneroBanda,
     deleteGeneroBanda,
     deleteGeneroBandaByIdBanda,
+    deleteGeneroBandaByIdGenero,
     selectAllGenerosBandas,
     selectByIdGeneroBanda,
     selectBandasByIdGenero,

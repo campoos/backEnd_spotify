@@ -14,6 +14,7 @@ const generoDAO = require('../../model/DAO/genero.js')
 
 //Import das controller necessárias para fazer os relacionamentos
 const controllerGeneroMusica = require('../musica/controllerGenerosMusicas.js')
+const controllerGeneroBanda = require('../banda/controllerGeneroBanda.js')
 
 // Função para inserir um novo genero
 const inserirGenero = async function (genero, contentType){
@@ -90,6 +91,8 @@ const exlcuirGenero = async function (id){
             return message.ERROR_REQUIRED_FIELDS //400
         }else {
             //Antes de excluir, estamos verificando se existe esse ID
+            await controllerGeneroBanda.excluirGeneroBandaByIdGenero(id)
+            await controllerGeneroMusica.excluirGeneroMusicaByIdGenero(id)
             let resultGenero = await generoDAO.selectByIdGenero(id)
 
             if(resultGenero != false || typeof(resultGenero) == 'object'){

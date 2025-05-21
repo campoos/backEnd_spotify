@@ -34,6 +34,7 @@ let controllerGenero = require('./controller/genero/controllerGenero.js')
 let controllerBanda = require('./controller/banda/controllerBanda.js')
 let controllerUsuario = require('./controller/usuario/controllerUsuario.js')
 let controllerAlbum = require('./controller/album/controllerAlbum.js')
+let controllerCurtida = require('./controller/curtida/controllerCurtida.js')
 
 //Cria um objeto para o body do tipo JSON
 const bodyParserJSON = bodyParser.json()
@@ -427,6 +428,37 @@ app.put('/v1/controle-albuns/album/:id', cors(), bodyParserJSON, async function(
 
     response.status(resultAlbum.status_code)
     response.json(resultAlbum)
+})
+
+//------------------------------ENDPOINTS DA CURTIDA-----------------------------------//
+
+//Endpoint para inserir uma curtida
+app.post('/v1/controle-curtidas/curtida', cors(), bodyParserJSON, async function(request, response){
+
+    //Recebe o CONTENT TYPE da requisição 
+    let contentType = request.headers['content-type']
+
+    //Recebe os dados do body da requisição
+    let dadosBody = request.body
+
+    //Chama a função da Controller para inserir os dados e aguarda o retorno da função
+    let resultCurtida = await controllerCurtida.inserirCurtida(dadosBody, contentType)
+
+    response.status(resultCurtida.status_code)
+    response.json(resultCurtida)
+})
+
+//Endpoint para deletar uma curtida pelo ID
+app.delete('/v1/controle-curtidas/curtida/:id', cors(), async function(request, response){
+
+    //Recebe o ID
+    let idCurtida = request.params.id
+
+    //Chama a função
+    let resultCurtida = await controllerCurtida.excluirCurtida(idCurtida)
+
+    response.status(resultCurtida.status_code)
+    response.json(resultCurtida)
 })
 
 app.listen(8080, function(){

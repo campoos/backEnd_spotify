@@ -12,6 +12,9 @@ const message = require('../../modulo/config.js')
 //Import do DAO para realizar o CRUD no Banco de dados
 const usuarioDAO = require('../../model/DAO/usuario.js')
 
+//Import das controller necessárias para fazer os relacionamentos
+const controllerCurtida = require('../curtida/controllerCurtida.js')
+
 // Função para inserir um novo usuário
 const inserirUsuario = async function (usuario, contentType){
 
@@ -132,6 +135,7 @@ const excluirUsuario = async function (id){
 // Função para retornar uma lista de usuarios
 const listarUsuarios = async function (){
     try {
+        let arrayUsuarios = []
         //Criando um objeto JSON
         let dadosUsuario = {
 
@@ -145,9 +149,16 @@ const listarUsuarios = async function (){
                 //Cria um JSON para colocar o ARRAY de músicas
                 dadosUsuario.status = true,
                 dadosUsuario.status_code = 200,
-                dadosUsuario.items = resultUsuario.length,
-                dadosUsuario.users = resultUsuario
+                dadosUsuario.items = resultUsuario.length
+    
+                for(const itemUsuario of resultUsuario){
+                    let dadosMusica = await controllerCurtida.getMusicasPeloUsuario(itemUsuario.id_usuario)
+                    itemUsuario.curtidas = dadosMusica.musicas
 
+                    arrayUsuarios.push(itemUsuario)
+                }
+
+                dadosUsuario.usuarios = arrayUsuarios
                 return  dadosUsuario
             }else{
                 return message.ERROR_NOT_FOUND //404
@@ -178,7 +189,7 @@ const buscarUsuario = async function (id){
                     //Cria um JSON para colocar o ARRAY de músicas
                     dadosUsuario.status = true,
                     dadosUsuario.status_code = 200,
-                    dadosUsuario.musics = resultUsuario
+                    dadosUsuario.users = resultUsuario
 
                     return  dadosUsuario
                 }else{
@@ -212,7 +223,7 @@ const buscarUsuarioLogin = async function (dados){
                     //Cria um JSON para colocar o ARRAY de músicas
                     dadosUsuario.status = true,
                     dadosUsuario.status_code = 200,
-                    dadosUsuario.musics = resultUsuario
+                    dadosUsuario.users = resultUsuario
 
                     return  dadosUsuario
                 }else{

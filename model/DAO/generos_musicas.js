@@ -89,6 +89,22 @@ const deleteGeneroMusicaByIdMusica = async function(id){
   }
 }
 
+//Função para excluir um genero_musica existente pelo id da musica
+const deleteGeneroMusicaByIdGenero = async function(id){
+  try {
+    let sql = `delete from tbl_generos_musicas where id_genero = ${id}`
+
+    let result = await prisma.$executeRawUnsafe(sql)
+
+    if (result)
+      return true
+    else 
+      return false
+  } catch (error) {
+    return false
+  }
+}
+
 //Função para retornar todos os generos_musicas existentes
 const selectAllGenerosMusicas = async function(){
 
@@ -173,6 +189,7 @@ module.exports = {
     updateGeneroMusica,
     deleteGeneroMusica,
     deleteGeneroMusicaByIdMusica,
+    deleteGeneroMusicaByIdGenero,
     selectAllGenerosMusicas,
     selectByIdGeneroMusica,
     selectMusicasByIdGenero,

@@ -15,6 +15,7 @@ const musicaDAO = require('../../model/DAO/musica.js')
 //Import das controller necessárias para fazer os relacionamentos
 const controllerGeneroMusica = require('./controllerGenerosMusicas.js')
 const controllerMusicaBanda  = require('./controllerMusicasBandas.js')
+const controllerCurtida      = require('../curtida/controllerCurtida.js')
 
 // Função para inserir uma nova música
 const inserirMusica = async function (musica, contentType){
@@ -202,7 +203,10 @@ const listarMusica = async function (){
 
                     let dadosBanda = await controllerMusicaBanda.buscarBandaPorMusica(itemMusica.id_musica)
                     itemMusica.bandas = dadosBanda.bandas
-                    
+
+                    let dadosCurtida = await controllerCurtida.getCurtidasPelaMusica(itemMusica.id_musica)
+                    itemMusica.curtidas = dadosCurtida.curtidas
+
                     arrayMusicas.push(itemMusica)
                 }
 
@@ -248,6 +252,9 @@ const buscarMusica = async function (id){
                     let dadosBanda = await controllerMusicaBanda.buscarBandaPorMusica(itemMusica.id_musica)
                     itemMusica.bandas = dadosBanda.bandas
                     
+                    let dadosCurtida = await controllerCurtida.getCurtidasPelaMusica(itemMusica.id_musica)
+                    itemMusica.curtidas = dadosCurtida.curtidas
+                    
                     arrayMusicas.push(itemMusica)
                 }
 
@@ -290,6 +297,13 @@ const buscarMusicaPeloAlbum = async function (id){
                 for (const itemMusica of resultMusica){
                     let dadosGenero = await controllerGeneroMusica.buscarGeneroPorMusica(itemMusica.id_musica)
                     itemMusica.genres = dadosGenero.generos
+
+                    let dadosBanda = await controllerMusicaBanda.buscarBandaPorMusica(itemMusica.id_musica)
+                    itemMusica.bandas = dadosBanda.bandas
+                    
+                    let dadosCurtida = await controllerCurtida.getCurtidasPelaMusica(itemMusica.id_musica)
+                    itemMusica.curtidas = dadosCurtida.curtidas
+                    
                     
                     arrayMusicas.push(itemMusica)
                 }
